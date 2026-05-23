@@ -1,11 +1,12 @@
-FROM node:20-alpine
+FROM node:20-slim
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Prisma needs openssl + libc6-compat on Alpine
-RUN apk add --no-cache openssl libc6-compat
+# Prisma needs openssl
+RUN apt-get update -y && apt-get install -y --no-install-recommends openssl ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 RUN npm install --omit=dev
