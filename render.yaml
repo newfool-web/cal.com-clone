@@ -1,0 +1,33 @@
+databases:
+  - name: calclone-db
+    plan: free
+    databaseName: calclone
+    user: calclone
+
+services:
+  - type: web
+    name: calclone-server
+    runtime: docker
+    plan: free
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: calclone-db
+          property: connectionString
+      - key: PORT
+        value: 4000
+      - key: DEFAULT_USER_EMAIL
+        value: achyut@example.com
+
+  - type: web
+    name: calclone-client
+    runtime: docker
+    plan: free
+    rootDir: client
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: VITE_API_URL
+        sync: false

@@ -1,0 +1,48 @@
+version: "3.9"
+
+# Dev stack: vite dev server + nodemon-style backend.
+# Run with:  docker compose -f docker-compose.dev.yml up
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: calclone-db-dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: calclone
+    ports:
+      - "5432:5432"
+    volumes:
+      - calclone_db_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d calclone"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build: ./server
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/calclone?schema=public
+      PORT: 4000
+      DEFAULT_USER_EMAIL: achyut@example.com
+    ports:
+      - "4000:4000"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - server
+    environment:
+      VITE_API_URL: http://localhost:4000
+    ports:
+      - "5173:5173"
+
+volumes:
+  calclone_db_dev:

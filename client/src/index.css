@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+select,
+textarea {
+  background: transparent;
+}
+
+/* Hide scrollbar but keep functional */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Toast entry animation */
+@keyframes toast-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.toast-in {
+  animation: toast-up 180ms ease-out;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-white text-black hover:bg-gray-200;
+  }
+  .btn-secondary {
+    @apply btn border border-border bg-panel text-white hover:bg-[#222];
+  }
+  .btn-ghost {
+    @apply btn text-white hover:bg-[#1f1f1f];
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-500;
+  }
+  .input {
+    @apply w-full rounded-md border border-border bg-[#141414] px-3 py-2 text-sm text-white placeholder:text-muted focus:border-white focus:outline-none;
+  }
+  .card {
+    @apply rounded-lg border border-border bg-panel;
+  }
+  .tab {
+    @apply px-3 py-1.5 text-sm font-medium rounded-md text-muted hover:text-white;
+  }
+  .tab-active {
+    @apply text-white bg-[#1f1f1f];
+  }
+}
