@@ -44,10 +44,34 @@ See [server/prisma/schema.prisma](server/prisma/schema.prisma).
 
 ```
 cal.com-clone/
-├── client/                  React + Vite frontend (Dockerfile, Dockerfile.dev, nginx.conf)
-├── server/                  Express + Prisma backend (Dockerfile, seed.js)
-├── docker-compose.yml       Production-style local stack
-└── docker-compose.dev.yml   Dev stack (vite HMR + nodemon-style)
+├── client/                       React + Vite + Tailwind frontend
+│   ├── src/
+│   │   ├── api/client.js         axios instance, baseURL = VITE_API_URL
+│   │   ├── components/           Sidebar, DashboardLayout, Calendar, Toast, Icons
+│   │   ├── pages/                Home, EventTypes, Availability, Bookings,
+│   │   │                         PublicProfile, PublicBooking, BookingConfirmation
+│   │   ├── store/                Redux store + userSlice (fetchMe, login)
+│   │   ├── App.jsx               routes (public + protected)
+│   │   └── main.jsx              ReactDOM root + providers
+│   ├── nginx.conf                SPA fallback + asset caching
+│   ├── Dockerfile                multi-stage: vite build → nginx
+│   └── Dockerfile.dev            vite dev server with HMR
+│
+├── server/                       Express + Prisma backend
+│   ├── prisma/
+│   │   ├── schema.prisma         User, EventType, Question, Schedule,
+│   │   │                         Availability, DateOverride, Booking, BookingAnswer
+│   │   └── seed.js               default user + event types + schedule (idempotent)
+│   ├── src/
+│   │   ├── routes/               me, eventTypes, schedules, bookings, public
+│   │   ├── slots.js              timezone-aware slot generation
+│   │   ├── db.js                 Prisma client + getDefaultUser()
+│   │   └── index.js              Express app + route mounting
+│   └── Dockerfile                node:20-slim + openssl
+│
+├── docker-compose.yml            prod-style: db + server + nginx client
+├── docker-compose.dev.yml        dev: db + server + vite HMR
+└── render.yaml                   Render Blueprint
 ```
 
 ## Running locally
